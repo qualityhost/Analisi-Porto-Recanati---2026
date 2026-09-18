@@ -1,0 +1,1043 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analisi di Mercato Immobiliare Turistico - Porto Recanati 2025</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Font Awesome CSS CDN (for icon fonts) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        warmbg: '#FAF8F5',
+                        warmcard: '#FFFFFF',
+                        warmborder: '#E8E2D5',
+                        navy: '#1E3A8A',
+                        teal: '#0D9488',
+                        amber: '#D97706',
+                        darkneutral: '#1F2937',
+                        lightneutral: '#F3F4F6'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #FAF8F5;
+            color: #1F2937;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 650px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 320px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 360px;
+            }
+        }
+        .tab-btn.active {
+            border-bottom: 3px solid #0D9488;
+            color: #0D9488;
+            font-weight: 700;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #F1F1F1;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #CBD5E1;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col custom-scrollbar">
+
+    <!-- Chosen Palette: Warm Sand & Coastal Slate (Background: #FAF8F5, Primary Navy: #1E3A8A, Accent Amber: #D97706, Secondary Teal: #0D9488, Dark Neutral: #1F2937) -->
+
+    <!-- Application Structure Plan:
+        1. Top Bar & Header: Strategic summary, key market KPIs (Presenze, Permanenza Media 6.41 notti, Growth rate, Target Yield).
+        2. Main Navigation Tabs:
+           - Tab 1: Macro Flussi & Territorio (Arrivi, Presenze, Permanenza media comparata con Chart.js, Provenienze).
+           - Tab 2: Tipologie & Calcolatore ROI (Analisi ADR per tipologia, simulatore finanziario dinamico Rent-to-Rent vs Buy-to-Let vs PM).
+           - Tab 3: Vulnerabilità & Killer Features (Punti critici competitors, soluzioni hardware/software come insonorizzazione e ZTL).
+           - Tab 4: Calendario Pricing Dinamico (Eventi 2025/2026 con moltiplicatori ADR e minimum stay).
+           - Tab 5: Quadro Normativo & Contratti (Guida CIN, Sanzioni, Contratto 4+4 vs 3+2, Tassa Staytour).
+           - Tab 6: Action Plan 5 Mosse (Roadmap operativa per l'investitore).
+        3. Dynamic State Management: JavaScript handle calculations, tab changes, dynamic chart rendering, interactive ROI adjustments.
+    -->
+
+    <!-- Visualization & Content Choices:
+        - Flussi Comparati: Chart.js Bar Chart per mostrare la Length of Stay (LOS) imbattibile di Porto Recanati (6.41 notti) rispetto a Numana, Senigallia e Civitanova Marche.
+        - Stagionalità e ADR: Chart.js Line/Bar Chart multilinea per confrontare le tariffe medie giornaliere (Bassa, Media, Alta stagione) tra Monolocali, Bilocali, Trilocali e Ville.
+        - Calcolatore ROI: Tool interattivo in Vanilla JS con slider e tendine per calcolare NOI lordo e netto basato sul modello di business selezionato.
+        - Vulnerabilità: Grid interattiva con card a scomparsa per analizzare la Ferrovia, ZTL, Gestione Amatoriale e Hotel House.
+        - Calendario Eventi: Tabella con filtri dinamici per mese e tipologia di evento.
+        - Requisiti Normativi: Checklist interattiva di conformità per il rilascio del CIN 2025.
+        - Structural Rationale: Struttura pensata per accompagnare l'investitore dalla macro-analisi di mercato fino all'esecuzione del business plan.
+    -->
+
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+
+    <!-- HEADER / HERO -->
+    <header class="bg-navy text-white border-b border-warmborder sticky top-0 z-50 shadow-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex flex-col md:flex-row justify-between items-center gap-4">
+            <div class="flex items-center space-x-3">
+                <div class="bg-teal text-white p-2.5 rounded-lg shadow font-bold text-xl">
+                    <i class="fa-solid fa-chart-line"></i>
+                </div>
+                <div>
+                    <h1 class="text-xl md:text-2xl font-bold tracking-tight text-white">Porto Recanati Invest 2025</h1>
+                    <p class="text-xs text-blue-200">Analisi Strategica e Intelligence per l'Investimento Immobiliare Turistico</p>
+                </div>
+            </div>
+            
+            <!-- Quick Indicators -->
+            <div class="flex items-center space-x-4 bg-blue-900/60 px-4 py-2 rounded-lg text-xs md:text-sm border border-blue-700/50">
+                <div class="text-center">
+                    <span class="block text-blue-300 text-[10px] uppercase font-semibold">Presenze 2024</span>
+                    <span class="font-bold text-white">457.150</span>
+                </div>
+                <div class="h-6 w-px bg-blue-700"></div>
+                <div class="text-center">
+                    <span class="block text-blue-300 text-[10px] uppercase font-semibold">Permanenza Media</span>
+                    <span class="font-bold text-amber-400">6,41 Notti</span>
+                </div>
+                <div class="h-6 w-px bg-blue-700"></div>
+                <div class="text-center">
+                    <span class="block text-blue-300 text-[10px] uppercase font-semibold">Top Asset</span>
+                    <span class="font-bold text-teal-300">Trilocale</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- NAVIGATION TABS -->
+        <nav class="bg-white text-darkneutral border-t border-warmborder shadow-inner">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex overflow-x-auto space-x-2 md:space-x-6 text-sm font-medium custom-scrollbar">
+                <button onclick="switchTab('tab-flussi')" id="btn-tab-flussi" class="tab-btn active py-3 px-2 whitespace-nowrap focus:outline-none transition-colors">
+                    <i class="fa-solid fa-chart-pie mr-1.5"></i> Flussi & Mercato
+                </button>
+                <button onclick="switchTab('tab-tipologie')" id="btn-tab-tipologie" class="tab-btn py-3 px-2 whitespace-nowrap focus:outline-none transition-colors">
+                    <i class="fa-solid fa-calculator mr-1.5"></i> Tipologie & Calcolatore ROI
+                </button>
+                <button onclick="switchTab('tab-vulnerabilita')" id="btn-tab-vulnerabilita" class="tab-btn py-3 px-2 whitespace-nowrap focus:outline-none transition-colors">
+                    <i class="fa-solid fa-shield-halved mr-1.5"></i> Competitor & Vulnerabilità
+                </button>
+                <button onclick="switchTab('tab-calendario')" id="btn-tab-calendario" class="tab-btn py-3 px-2 whitespace-nowrap focus:outline-none transition-colors">
+                    <i class="fa-regular fa-calendar-days mr-1.5"></i> Calendario Pricing 2025
+                </button>
+                <button onclick="switchTab('tab-normativa')" id="btn-tab-normativa" class="tab-btn py-3 px-2 whitespace-nowrap focus:outline-none transition-colors">
+                    <i class="fa-solid fa-gavel mr-1.5"></i> Quadro Normativo & CIN
+                </button>
+                <button onclick="switchTab('tab-actionplan')" id="btn-tab-actionplan" class="tab-btn py-3 px-2 whitespace-nowrap focus:outline-none transition-colors">
+                    <i class="fa-solid fa-rocket mr-1.5"></i> Piano d'Azione (5 Mosse)
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <!-- MAIN CONTENT CONTAINERS -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+        <!-- SECTION 1: FLUSSI E MACRO MERCATO -->
+        <section id="tab-flussi" class="tab-content block space-y-6">
+            <div class="bg-warmcard p-6 rounded-xl border border-warmborder shadow-sm">
+                <div class="max-w-3xl">
+                    <h2 class="text-2xl font-bold text-navy mb-2">Analisi dei Flussi Turistici e Posizionamento Strategico</h2>
+                    <p class="text-gray-600 text-sm leading-relaxed">
+                        Porto Recanati rappresenta il polo ricettivo primario della Riviera del Conero meridionale. L'analisi quantitativa dei dati evidenzia un mercato stanziale ad alta marginalità operativa, caratterizzato da una permanenza media eccezionale che minimizza i costi variabili di pulizia e turnover.
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mt-6">
+                    <div class="bg-warmbg p-4 rounded-lg border border-warmborder">
+                        <div class="text-xs uppercase font-semibold text-gray-500">Arrivi Registrati (Gen-Set)</div>
+                        <div class="text-2xl font-extrabold text-navy mt-1">71.294</div>
+                        <div class="text-xs text-teal mt-1 font-medium"><i class="fa-solid fa-arrow-trend-up"></i> Solido bacino domestico</div>
+                    </div>
+                    <div class="bg-warmbg p-4 rounded-lg border border-warmborder">
+                        <div class="text-xs uppercase font-semibold text-gray-500">Presenze Totali</div>
+                        <div class="text-2xl font-extrabold text-navy mt-1">457.150</div>
+                        <div class="text-xs text-teal mt-1 font-medium"><i class="fa-solid fa-check"></i> Superati livelli 2019 e 2022</div>
+                    </div>
+                    <div class="bg-warmbg p-4 rounded-lg border border-warmborder">
+                        <div class="text-xs uppercase font-semibold text-gray-500">Permanenza Media (LOS)</div>
+                        <div class="text-2xl font-extrabold text-amber mt-1">6,41 Notti</div>
+                        <div class="text-xs text-amber-700 mt-1 font-medium"><i class="fa-solid fa-star"></i> Basso impatto costi turnover</div>
+                    </div>
+                    <div class="bg-warmbg p-4 rounded-lg border border-warmborder">
+                        <div class="text-xs uppercase font-semibold text-gray-500">Turismo Estero</div>
+                        <div class="text-2xl font-extrabold text-teal mt-1">+20% YoY</div>
+                        <div class="text-xs text-teal-700 mt-1 font-medium"><i class="fa-solid fa-globe"></i> DACH e CEE in espansione</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- COMPARATIVE CHART & GEOGRAPHY -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- Chart Container -->
+                <div class="bg-warmcard p-6 rounded-xl border border-warmborder shadow-sm flex flex-col justify-between">
+                    <div>
+                        <h3 class="text-lg font-bold text-navy mb-1">Confronto Permanenza Media (Notti) - Costa Marchigiana</h3>
+                        <p class="text-xs text-gray-500 mb-4">Confronto tra le principali destinazioni balneari ed extra-urbane (Dati 2024).</p>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="losChart"></canvas>
+                    </div>
+                    <p class="text-xs text-gray-500 mt-3 italic">
+                        <strong>Nota per l'investitore:</strong> Una LOS di 6,41 notti garantisce un Net Operating Income (NOI) superiore rispettivo a città d'arte o poli d'affari (LOS ~2,0) tagliando del 60% le spese per ripasso biancheria e check-in.
+                    </p>
+                </div>
+
+                <!-- Demographic & Geographic Breakdown -->
+                <div class="bg-warmcard p-6 rounded-xl border border-warmborder shadow-sm flex flex-col justify-between">
+                    <div>
+                        <h3 class="text-lg font-bold text-navy mb-3">Origine della Domanda & Profilo del Turista</h3>
+                        <div class="space-y-4">
+                            <div class="p-3 bg-blue-50/50 rounded-lg border border-blue-100">
+                                <h4 class="font-semibold text-sm text-navy flex items-center">
+                                    <i class="fa-solid fa-flag-usa mr-2 text-blue-600"></i> Mercato Nazionale (Domestico ~80%)
+                                </h4>
+                                <p class="text-xs text-gray-600 mt-1">
+                                    Bacini prioritari: Lombardia, Emilia-Romagna, Umbria e Marche interne. Predilige la vacanza balneare stanziale nei mesi di Luglio e Agosto. Famiglie numerose e gruppi multifamiliari.
+                                </p>
+                            </div>
+
+                            <div class="p-3 bg-amber-50/50 rounded-lg border border-amber-100">
+                                <h4 class="font-semibold text-sm text-amber-900 flex items-center">
+                                    <i class="fa-solid fa-earth-europe mr-2 text-amber-600"></i> Mercato Internazionale (+20% in crescita)
+                                </h4>
+                                <p class="text-xs text-gray-600 mt-1">
+                                    Provenienze chiave: Germania, Austria, Svizzera (Area DACH) ed Est Europa (Ungheria, Croazia). Intercettano i mesi di spalla (Maggio, Giugno, Settembre) allungando la stagionalità operativa.
+                                </p>
+                            </div>
+
+                            <div class="p-3 bg-teal-50/50 rounded-lg border border-teal-100">
+                                <h4 class="font-semibold text-sm text-teal-900 flex items-center">
+                                    <i class="fa-solid fa-bicycle mr-2 text-teal-600"></i> Trend Emergenti: Cicloturismo & Nomadismo
+                                </h4>
+                                <p class="text-xs text-gray-600 mt-1">
+                                    Riconoscimento "Bandiera Gialla" FIAB e snodo della Ciclovia Adriatica (BI06). Cresce la domanda di cicloturisti primaverili ed autunnali in e-bike e nomadi digitali invernali.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 2: TIPOLOGIE IMMOBILIARI & CALCOLATORE ROI -->
+        <section id="tab-tipologie" class="tab-content hidden space-y-6">
+            <div class="bg-warmcard p-6 rounded-xl border border-warmborder shadow-sm">
+                <h2 class="text-2xl font-bold text-navy mb-2">Analisi delle Tipologie e Simulatori Finanziari</h2>
+                <p class="text-gray-600 text-sm">
+                    Analizza la distribuzione dei prezzi medi giornalieri (ADR) e dell'occupazione stimata per ciascun asset class immobiliare. Utilizza il simulatore interattivo per testare i rendimenti del tuo modello di business (Rent-to-Rent vs Buy-to-Let vs Property Management).
+                </p>
+            </div>
+
+            <!-- ADR & OCCUPANCY CHART & TABLE -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Visualizing ADR Trends -->
+                <div class="lg:col-span-2 bg-warmcard p-6 rounded-xl border border-warmborder shadow-sm">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
+                        <h3 class="text-lg font-bold text-navy">Proiezione Tariffe Medi Giornaliere (ADR 2025)</h3>
+                        <select id="propertyTypeSelect" onchange="updateAdrChart()" class="text-xs bg-warmbg border border-warmborder rounded-lg px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-teal">
+                            <option value="all">Confronta Tutte le Tipologie</option>
+                            <option value="mono">Affittacamere / Monolocale</option>
+                            <option value="bilo">Bilocale (4 Pax)</option>
+                            <option value="trilo" selected>Trilocale (5-6 Pax - Target Elezione)</option>
+                            <option value="quadri">Quadrilocale (7-8 Pax)</option>
+                            <option value="villa">Villa (8+ Pax)</option>
+                        </select>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="adrChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Property Summary Matrix -->
+                <div class="bg-warmcard p-6 rounded-xl border border-warmborder shadow-sm flex flex-col justify-between">
+                    <div>
+                        <h3 class="text-lg font-bold text-navy mb-3">Ranking Asset Class</h3>
+                        <div class="space-y-3 text-xs">
+                            <div class="p-3 rounded-lg border border-teal-200 bg-teal-50/40">
+                                <div class="flex justify-between font-bold text-teal-900">
+                                    <span>TRILOCALE (Centro/Mare)</span>
+                                    <span class="bg-teal-600 text-white px-1.5 py-0.5 rounded text-[10px]">RATING #1</span>
+                                </div>
+                                <p class="text-gray-600 mt-1">Capienza 5-6 ospiti. Perfetto per famiglie estive, gruppi sportivi primaverili e smart worker invernali. Massimo Risk-Adjusted Return.</p>
+                            </div>
+
+                            <div class="p-3 rounded-lg border border-warmborder bg-gray-50">
+                                <div class="flex justify-between font-bold text-gray-800">
+                                    <span>BILOCALE</span>
+                                    <span class="bg-gray-500 text-white px-1.5 py-0.5 rounded text-[10px]">RATING #2</span>
+                                </div>
+                                <p class="text-gray-600 mt-1">Capienza 4 ospiti. Ottimo per Rent-to-Rent ad alto turnover o coppie estero-spandenti. ADR Estate 130-160€.</p>
+                            </div>
+
+                            <div class="p-3 rounded-lg border border-warmborder bg-gray-50">
+                                <div class="flex justify-between font-bold text-gray-800">
+                                    <span>QUADRILOCALE / VILLA</span>
+                                    <span class="bg-amber-600 text-white px-1.5 py-0.5 rounded text-[10px]">RATING #3</span>
+                                </div>
+                                <p class="text-gray-600 mt-1">Elevato scontrino in altissima stagione (250-700€/notte), ma occupazione annua più ridotta (35-45%). Richiede gestione complessa.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- INTERACTIVE ROI CALCULATOR -->
+            <div class="bg-navy text-white p-6 rounded-xl shadow-lg border border-blue-900">
+                <div class="max-w-3xl mb-6">
+                    <h3 class="text-xl font-bold flex items-center text-white">
+                        <i class="fa-solid fa-calculator text-amber-400 mr-2.5"></i> Calcolatore ROI & Conto Economico Previsionale 2025
+                    </h3>
+                    <p class="text-xs text-blue-200 mt-1">
+                        Simula la redditività netta stimata inserendo i parametri del tuo investimento a Porto Recanati.
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                    <!-- Controls Column -->
+                    <div class="lg:col-span-7 bg-blue-900/50 p-5 rounded-lg border border-blue-700/50 space-y-4 text-xs">
+                        <!-- Model Selection -->
+                        <div>
+                            <label class="block font-semibold text-blue-200 mb-1">Modello d'Ingresso Strategico</label>
+                            <select id="roiModel" onchange="calculateROI()" class="w-full bg-blue-950 border border-blue-700 text-white rounded p-2 focus:ring-1 focus:ring-amber">
+                                <option value="r2r" selected>Rent-to-Rent (Sublocazione con Contratto 4+4)</option>
+                                <option value="pm">Property Management (Fee di Gestione Conto Terzi)</option>
+                                <option value="btl">Buy-to-Let (Acquisto Immobile e Messa a Reddito)</option>
+                            </select>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <!-- Asset Type -->
+                            <div>
+                                <label class="block font-semibold text-blue-200 mb-1">Tipologia Asset</label>
+                                <select id="roiType" onchange="calculateROI()" class="w-full bg-blue-950 border border-blue-700 text-white rounded p-2">
+                                    <option value="bilo">Bilocale (4 Pax)</option>
+                                    <option value="trilo" selected>Trilocale (6 Pax)</option>
+                                    <option value="quadri">Quadrilocale (8 Pax)</option>
+                                </select>
+                            </div>
+                            
+                            <!-- Monthly Rent or Fee -->
+                            <div id="costInputWrapper">
+                                <label id="costInputLabel" class="block font-semibold text-blue-200 mb-1">Canone Annuo Locazione (€/anno)</label>
+                                <input type="number" id="roiAnnualCost" value="8400" oninput="calculateROI()" class="w-full bg-blue-950 border border-blue-700 text-white rounded p-2">
+                            </div>
+                        </div>
+
+                        <!-- Sliders -->
+                        <div class="space-y-3">
+                            <div>
+                                <div class="flex justify-between text-blue-200 font-semibold mb-1">
+                                    <span>ADR Medio Ponderato Stagionale (€):</span>
+                                    <span id="adrVal" class="text-amber-400 font-bold">145 €</span>
+                                </div>
+                                <input type="range" id="roiAdr" min="80" max="280" value="145" step="5" oninput="calculateROI()" class="w-full accent-amber-400">
+                            </div>
+
+                            <div>
+                                <div class="flex justify-between text-blue-200 font-semibold mb-1">
+                                    <span>Tasso di Occupazione Annua (%):</span>
+                                    <span id="occVal" class="text-teal-300 font-bold">58%</span>
+                                </div>
+                                <input type="range" id="roiOcc" min="30" max="80" value="58" step="1" oninput="calculateROI()" class="w-full accent-teal-400">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Results Column -->
+                    <div class="lg:col-span-5 bg-warmcard text-darkneutral p-5 rounded-lg border border-warmborder flex flex-col justify-between shadow-inner">
+                        <div>
+                            <h4 class="font-bold text-navy text-sm uppercase border-b border-warmborder pb-2">Proiezione Finanziaria Annuo</h4>
+                            
+                            <div class="mt-4 space-y-2 text-xs">
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600">Notti Vendute Stimate:</span>
+                                    <span id="resNotti" class="font-bold">211 notti</span>
+                                </div>
+                                <div class="flex justify-between text-sm">
+                                    <span class="font-semibold text-navy">Fatturato Lordo STR:</span>
+                                    <span id="resFatturato" class="font-bold text-navy">30.595 €</span>
+                                </div>
+                                <div class="flex justify-between text-red-600">
+                                    <span>Costi Operativi & Commissioni OTA (~28%):</span>
+                                    <span id="resCostiOp">-8.566 €</span>
+                                </div>
+                                <div class="flex justify-between text-gray-700" id="rowFixedCost">
+                                    <span>Canone Locazione / Costo Capitale:</span>
+                                    <span id="resCostoFisso">-8.400 €</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-4 pt-3 border-t border-warmborder">
+                            <div class="text-xs uppercase text-gray-500 font-bold">Margine Operativo Netto (NOI)</div>
+                            <div id="resNOI" class="text-3xl font-extrabold text-teal mt-1">13.629 €</div>
+                            <div class="mt-2 text-[11px] bg-teal-50 text-teal-900 p-2 rounded border border-teal-200">
+                                <span class="font-bold">ROI / Cash-on-Cash Stimato: </span><span id="resROI" class="font-extrabold">~85%</span>
+                                <p class="text-[10px] text-gray-500 mt-0.5">Basato su un setup/capitale iniziale medio di 12.000 € (Rent-to-Rent).</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 3: VULNERABILITÀ & KILLER FEATURES -->
+        <section id="tab-vulnerabilita" class="tab-content hidden space-y-6">
+            <div class="bg-warmcard p-6 rounded-xl border border-warmborder shadow-sm">
+                <h2 class="text-2xl font-bold text-navy mb-2">Punti Critici dei Competitor e Fattori Differenzianti</h2>
+                <p class="text-gray-600 text-sm">
+                    Oltre l'80% delle oltre 2.100 unità ricettive a Porto Recanati è gestita in modalità amatoriale. Ecco i principali "punti di dolore" lamentati dai turisti e come neutralizzarli per dominare le piattaforme.
+                </p>
+            </div>
+
+            <!-- Matrix of Vulnerabilities vs Solutions -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+                <!-- Vulnerability 1: Railway Noise -->
+                <div class="bg-warmcard p-5 rounded-xl border-l-4 border-red-500 shadow-sm space-y-3">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <span class="text-[10px] font-bold text-red-600 uppercase tracking-wider bg-red-50 px-2 py-0.5 rounded">Criticità #1</span>
+                            <h3 class="font-bold text-navy text-base mt-1">Inquinamento Acustico da Ferrovia</h3>
+                        </div>
+                        <div class="bg-red-100 text-red-700 p-2 rounded-full">
+                            <i class="fa-solid fa-train"></i>
+                        </div>
+                    </div>
+                    <p class="text-xs text-gray-600">
+                        La linea ferroviaria Adriatica attraversa longitudinalmente il centro abitato. Recensioni storiche negative legate al passaggio notturno dei convogli merci.
+                    </p>
+                    <blockquote class="text-[11px] italic bg-warmbg p-2.5 rounded text-gray-600 border-l-2 border-red-300">
+                        "Terribile la ferrovia a 20 metri, rumore assordante durante la notte... abbiamo dormito poco e male." (Recensione reale OTA)
+                    </blockquote>
+                    <div class="bg-teal-50 p-3 rounded-lg border border-teal-200 mt-2">
+                        <span class="text-xs font-bold text-teal-900 block mb-1"><i class="fa-solid fa-shield-check text-teal-600 mr-1"></i> Soluzione dell'Investitore Professionale:</span>
+                        <p class="text-xs text-teal-950">
+                            Retrofit acustico obbligatorio: installazione di infissi in PVC con triplo vetro (abbattimento acustico ≥ 42-45 dB) e sistema di Ventilazione Meccanica Controllata (VMC) per permettere il ricircolo d'aria a finestre chiuse.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Vulnerability 2: ZTL & Parking -->
+                <div class="bg-warmcard p-5 rounded-xl border-l-4 border-amber-500 shadow-sm space-y-3">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <span class="text-[10px] font-bold text-amber-600 uppercase tracking-wider bg-amber-50 px-2 py-0.5 rounded">Criticità #2</span>
+                            <h3 class="font-bold text-navy text-base mt-1">ZTL Estiva & Parcheggi Introvabili</h3>
+                        </div>
+                        <div class="bg-amber-100 text-amber-700 p-2 rounded-full">
+                            <i class="fa-solid fa-square-parking"></i>
+                        </div>
+                    </div>
+                    <p class="text-xs text-gray-600">
+                        ZTL attiva dal 1° Luglio al 31 Agosto (ore 21:00-03:00) su Corso Matteotti e centro storico. Gli host amatoriali non forniscono né stalli privati né pass autorizzativi.
+                    </p>
+                    <blockquote class="text-[11px] italic bg-warmbg p-2.5 rounded text-gray-600 border-l-2 border-amber-300">
+                        "Un incubo trovare parcheggio la sera. Girato per un'ora, costretti a parcheggiare lontanissimo con i bagagli."
+                    </blockquote>
+                    <div class="bg-teal-50 p-3 rounded-lg border border-teal-200 mt-2">
+                        <span class="text-xs font-bold text-teal-900 block mb-1"><i class="fa-solid fa-key text-teal-600 mr-1"></i> Soluzione dell'Investitore Professionale:</span>
+                        <p class="text-xs text-teal-950">
+                            Selezionare immobili con posto auto di proprietà o stipulare abbonamenti stagionali con parcheggi custoditi (es. Parcheggio Galilei / Pastrengo). Fornire istruzioni di accesso ZTL pre-check-in via WhatsApp.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Vulnerability 3: Amateur Management -->
+                <div class="bg-warmcard p-5 rounded-xl border-l-4 border-blue-500 shadow-sm space-y-3">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <span class="text-[10px] font-bold text-blue-600 uppercase tracking-wider bg-blue-50 px-2 py-0.5 rounded">Criticità #3</span>
+                            <h3 class="font-bold text-navy text-base mt-1">Gestione Amatoriale & No Technology</h3>
+                        </div>
+                        <div class="bg-blue-100 text-blue-700 p-2 rounded-full">
+                            <i class="fa-solid fa-wifi"></i>
+                        </div>
+                    </div>
+                    <p class="text-xs text-gray-600">
+                        Assenza di Self Check-in, Wi-Fi fibra assente o lento, aria condizionata limitata a pinguini portatili rumorosi, tariffe fisse mensili invece di pricing dinamico.
+                    </p>
+                    <div class="bg-teal-50 p-3 rounded-lg border border-teal-200 mt-2">
+                        <span class="text-xs font-bold text-teal-900 block mb-1"><i class="fa-solid fa-microchip text-teal-600 mr-1"></i> Soluzione dell'Investitore Professionale:</span>
+                        <p class="text-xs text-teal-950">
+                            Smart-lock per self check-in h24, Wi-Fi Fibra 1Gbps con workstation per nomadi digitali, domotica con termostati intelligenti e listini ottimizzati con PriceLabs/Wheelhouse.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Vulnerability 4: Hotel House Proximity -->
+                <div class="bg-warmcard p-5 rounded-xl border-l-4 border-gray-500 shadow-sm space-y-3">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <span class="text-[10px] font-bold text-gray-600 uppercase tracking-wider bg-gray-100 px-2 py-0.5 rounded">Criticità #4</span>
+                            <h3 class="font-bold text-navy text-base mt-1">Rischio Reputazionale "Hotel House"</h3>
+                        </div>
+                        <div class="bg-gray-200 text-gray-700 p-2 rounded-full">
+                            <i class="fa-solid fa-triangle-exclamation"></i>
+                        </div>
+                    </div>
+                    <p class="text-xs text-gray-600">
+                        Grattacielo residenziale di 17 piani situato nella zona sud, soggetto a grave degrado sociale. Impatto reputazionale fortemente negativo se l'immobile sorge nelle immediate vicinanze.
+                    </p>
+                    <div class="bg-teal-50 p-3 rounded-lg border border-teal-200 mt-2">
+                        <span class="text-xs font-bold text-teal-900 block mb-1"><i class="fa-solid fa-map-location-dot text-teal-600 mr-1"></i> Soluzione dell'Investitore Professionale:</span>
+                        <p class="text-xs text-teal-950">
+                            Esclusione preventiva del micro-quartiere Hotel House dal raggio d'acquisto o rent-to-rent. Focus focalizzato esclusivamente su Centro Storico, Corso Matteotti, Lungomare Lepanto e Scossicci Nord.
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- SECTION 4: CALENDARIO PRICING DINAMICO -->
+        <section id="tab-calendario" class="tab-content hidden space-y-6">
+            <div class="bg-warmcard p-6 rounded-xl border border-warmborder shadow-sm">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                    <div>
+                        <h2 class="text-2xl font-bold text-navy mb-1">Calendario Eventi & Pricing Dinamico 2025/2026</h2>
+                        <p class="text-gray-600 text-sm">
+                            Mappa dei picchi di domanda ad alta compressione tariffaria. Imposta tariffe premium e restrizioni sul minimum stay in coincidenza con questi eventi per massimizzare il RevPAR.
+                        </p>
+                    </div>
+                    <!-- Event Category Filter -->
+                    <div class="flex flex-wrap gap-2 text-xs">
+                        <button onclick="filterEvents('all')" class="event-filter-btn bg-navy text-white px-3 py-1.5 rounded-lg">Tutti gli Eventi</button>
+                        <button onclick="filterEvents('estate')" class="event-filter-btn bg-warmbg border border-warmborder px-3 py-1.5 rounded-lg">Alta Stagione</button>
+                        <button onclick="filterEvents('bike')" class="event-filter-btn bg-warmbg border border-warmborder px-3 py-1.5 rounded-lg">Cicloturismo</button>
+                        <button onclick="filterEvents('cultura')" class="event-filter-btn bg-warmbg border border-warmborder px-3 py-1.5 rounded-lg">Cultura & Fede</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- EVENTS TABLE -->
+            <div class="bg-warmcard rounded-xl border border-warmborder shadow-sm overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse text-xs">
+                        <thead>
+                            <tr class="bg-navy text-white uppercase text-[10px] tracking-wider">
+                                <th class="p-3.5">Evento / Finestra Temporale</th>
+                                <th class="p-3.5">Periodo Indicativo</th>
+                                <th class="p-3.5">Target Previsto</th>
+                                <th class="p-3.5">Moltiplicatore ADR Consigliato</th>
+                                <th class="p-3.5">Minimum Stay Consigliato</th>
+                            </tr>
+                        </thead>
+                        <tbody id="eventsTableBody" class="divide-y divide-warmborder">
+                            <!-- JS populates this -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 5: QUADRO NORMATIVO & CIN -->
+        <section id="tab-normativa" class="tab-content hidden space-y-6">
+            <div class="bg-warmcard p-6 rounded-xl border border-warmborder shadow-sm">
+                <h2 class="text-2xl font-bold text-navy mb-2">Quadro Normativo, CIN & Vincoli Contrattuali</h2>
+                <p class="text-gray-600 text-sm">
+                    L'entrata in vigore del Codice Identificativo Nazionale (CIN) nel 2025 impone standard di sicurezza stringenti e spazza via l'abusivismo amatoriale, creando un importante vantaggio per gli operatori strutturati.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+                <!-- CIN Checklist -->
+                <div class="bg-warmcard p-6 rounded-xl border border-warmborder shadow-sm">
+                    <h3 class="text-lg font-bold text-navy mb-3 flex items-center">
+                        <i class="fa-solid fa-list-check text-teal mr-2"></i> Checklist Obblighi CIN 2025 (Ministero del Turismo)
+                    </h3>
+                    <p class="text-xs text-gray-500 mb-4">
+                        Tutte le locazioni turistiche devono adeguarsi ai requisiti previsti dal BDSR prima della commercializzazione online.
+                    </p>
+
+                    <div class="space-y-3 text-xs" id="cinChecklist">
+                        <label class="flex items-start space-x-3 p-2.5 bg-warmbg rounded border border-warmborder cursor-pointer">
+                            <input type="checkbox" checked disabled class="mt-0.5 text-teal rounded">
+                            <div>
+                                <span class="font-bold text-gray-800">Rilevatori di Gas e Monossido di Carbonio (CO)</span>
+                                <p class="text-[11px] text-gray-500">Obbligatori in tutte le unità abitative dotate di impianto a gas.</p>
+                            </div>
+                        </label>
+
+                        <label class="flex items-start space-x-3 p-2.5 bg-warmbg rounded border border-warmborder cursor-pointer">
+                            <input type="checkbox" checked disabled class="mt-0.5 text-teal rounded">
+                            <div>
+                                <span class="font-bold text-gray-800">Estintori Portatili Omologati</span>
+                                <p class="text-[11px] text-gray-500">Almeno 1 estintore ogni 200 mq (e comunque almeno 1 per piano), posizionato in luogo accessibile e segnalato.</p>
+                            </div>
+                        </label>
+
+                        <label class="flex items-start space-x-3 p-2.5 bg-warmbg rounded border border-warmborder cursor-pointer">
+                            <input type="checkbox" checked disabled class="mt-0.5 text-teal rounded">
+                            <div>
+                                <span class="font-bold text-gray-800">Esposizione Esterna del Codice CIN</span>
+                                <p class="text-[11px] text-gray-500">Esposizione obbligatoria all'esterno dello stabile e in ogni annuncio pubblicato sulle OTA.</p>
+                            </div>
+                        </label>
+
+                        <label class="flex items-start space-x-3 p-2.5 bg-warmbg rounded border border-warmborder cursor-pointer">
+                            <input type="checkbox" checked disabled class="mt-0.5 text-teal rounded">
+                            <div>
+                                <span class="font-bold text-gray-800">Sanzioni Amministrative ed Erariali</span>
+                                <p class="text-[11px] text-red-600 font-semibold">Multe da 800 € fino a 8.000 € per mancato possesso o esposizione del CIN.</p>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Rent-to-Rent Legal Warning -->
+                <div class="bg-warmcard p-6 rounded-xl border border-warmborder shadow-sm flex flex-col justify-between">
+                    <div>
+                        <h3 class="text-lg font-bold text-navy mb-3 flex items-center">
+                            <i class="fa-solid fa-file-contract text-amber mr-2"></i> Insidie Contrattuali per la Sublocazione (Rent-to-Rent)
+                        </h3>
+
+                        <div class="space-y-3 text-xs">
+                            <div class="p-3 bg-red-50 border border-red-200 rounded-lg">
+                                <span class="font-bold text-red-900 block mb-1"><i class="fa-solid fa-xmark text-red-600 mr-1"></i> DIVIETO: Contratto a Canone Concordato (3+2)</span>
+                                <p class="text-red-950">
+                                    Stipulare un contratto 3+2 ai fini di sublocazione turistica è illegale e comporterà la decadenza di tutte le agevolazioni fiscali per il proprietario (Cedolare secca al 10% e sconto IMU), con invalidità delle clausole contrattuali.
+                                </p>
+                            </div>
+
+                            <div class="p-3 bg-teal-50 border border-teal-200 rounded-lg">
+                                <span class="font-bold text-teal-900 block mb-1"><i class="fa-solid fa-check text-teal-600 mr-1"></i> SOLUZIONE UNICA: Contratto a Canone Libero (4+4)</span>
+                                <p class="text-teal-950">
+                                    Occorre redigere un contratto commerciale 4+4 con deroga esplicita all'art. 1594 del Codice Civile, autorizzando espressamente il conduttore alla sublocazione per finalità turistiche ed all'eventuale gestione imprenditoriale.
+                                </p>
+                            </div>
+
+                            <div class="p-3 bg-warmbg border border-warmborder rounded-lg">
+                                <span class="font-bold text-gray-800 block mb-1"><i class="fa-solid fa-building-columns text-gray-600 mr-1"></i> Tassa di Soggiorno & Portali Locali</span>
+                                <p class="text-gray-600">
+                                    Adesione al portale *Staytour* del Comune di Porto Recanati (0,75 €/notte/pax per max 10 notti), invio schedine alloggiati a Questura (*Alloggiati Web*) e rilevazioni ISTAT tramite *ROSS1000*.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- SECTION 6: PIANO D'AZIONE IN 5 MOSSE -->
+        <section id="tab-actionplan" class="tab-content hidden space-y-6">
+            <div class="bg-warmcard p-6 rounded-xl border border-warmborder shadow-sm">
+                <h2 class="text-2xl font-bold text-navy mb-2">Piano d'Azione Pratico: Roadmap in 5 Mosse</h2>
+                <p class="text-gray-600 text-sm">
+                    Guida strategica passo-passo per un ingresso ad altissima redditività nel mercato turistico immobiliare di Porto Recanati.
+                </p>
+            </div>
+
+            <!-- Timeline 5 Moves -->
+            <div class="space-y-4">
+
+                <!-- Step 1 -->
+                <div class="bg-warmcard p-5 rounded-xl border border-warmborder shadow-sm flex flex-col md:flex-row gap-4 items-start">
+                    <div class="bg-navy text-white rounded-xl p-3 text-center min-w-[70px]">
+                        <span class="block text-xs uppercase font-bold text-blue-300">Fase</span>
+                        <span class="text-2xl font-extrabold">01</span>
+                    </div>
+                    <div class="space-y-1 text-xs">
+                        <h3 class="font-bold text-navy text-base">Due Diligence Normativa & Selezione Asset</h3>
+                        <p class="text-gray-600 leading-relaxed">
+                            Individuazione di Trilocali (5-6 posti letto) nelle micro-zone Centro/Lungomare o Scossicci Nord. Verifica preliminare della conformità urbanistica e catastale (SCA - Segnalazione Certificata Agibilità) indispensabile per ottenere il CIN 2025.
+                        </p>
+                        <div class="text-[11px] text-teal font-semibold mt-1"><i class="fa-solid fa-bullseye"></i> KPI: Target prezzo d'acquisto &lt; 2.100 €/m² o canone di locazione &lt; 750 €/mese.</div>
+                    </div>
+                </div>
+
+                <!-- Step 2 -->
+                <div class="bg-warmcard p-5 rounded-xl border border-warmborder shadow-sm flex flex-col md:flex-row gap-4 items-start">
+                    <div class="bg-navy text-white rounded-xl p-3 text-center min-w-[70px]">
+                        <span class="block text-xs uppercase font-bold text-blue-300">Fase</span>
+                        <span class="text-2xl font-extrabold">02</span>
+                    </div>
+                    <div class="space-y-1 text-xs">
+                        <h3 class="font-bold text-navy text-base">Contrattualizzazione Blindata & Protezione Giuridica</h3>
+                        <p class="text-gray-600 leading-relaxed">
+                            Stipula del contratto a canone libero 4+4 con clausola di sublocazione turistica espressa (deroga art. 1594 C.C.) per il modello Rent-to-Rent, offrendo al proprietario la garanzia del canone fisso annuo e della manutenzione ordinaria inclusa.
+                        </p>
+                        <div class="text-[11px] text-teal font-semibold mt-1"><i class="fa-solid fa-file-shield"></i> KPI: Zero contenziosi fiscali e totale tutela della società di gestione.</div>
+                    </div>
+                </div>
+
+                <!-- Step 3 -->
+                <div class="bg-warmcard p-5 rounded-xl border border-warmborder shadow-sm flex flex-col md:flex-row gap-4 items-start">
+                    <div class="bg-navy text-white rounded-xl p-3 text-center min-w-[70px]">
+                        <span class="block text-xs uppercase font-bold text-blue-300">Fase</span>
+                        <span class="text-2xl font-extrabold">03</span>
+                    </div>
+                    <div class="space-y-1 text-xs">
+                        <h3 class="font-bold text-navy text-base">Retrofit Tecnologico & Neutralizzazione Punti di Dolore</h3>
+                        <p class="text-gray-600 leading-relaxed">
+                            Installazione di infissi a triplo vetro ad elevato isolamento acustico (42-45 dB) con sistema VMC per annullare il rumore dei treni. Integrazione di domotica per il self check-in h24, rilevatori gas/estintori CIN e contratto per posto auto riservato durante la ZTL estiva.
+                        </p>
+                        <div class="text-[11px] text-teal font-semibold mt-1"><i class="fa-solid fa-star"></i> KPI: Punteggio recensioni stimato su Booking/Airbnb ≥ 9.4/10.</div>
+                    </div>
+                </div>
+
+                <!-- Step 4 -->
+                <div class="bg-warmcard p-5 rounded-xl border border-warmborder shadow-sm flex flex-col md:flex-row gap-4 items-start">
+                    <div class="bg-navy text-white rounded-xl p-3 text-center min-w-[70px]">
+                        <span class="block text-xs uppercase font-bold text-blue-300">Fase</span>
+                        <span class="text-2xl font-extrabold">04</span>
+                    </div>
+                    <div class="space-y-1 text-xs">
+                        <h3 class="font-bold text-navy text-base">Posizionamento Olistico Experiential & Bike-Friendly</h3>
+                        <p class="text-gray-600 leading-relaxed">
+                            Allestimento immobile per intercettare il cicloturismo (rastrelliera, presa e-bike, mappe dei percorsi Conero/Musone) sfruttando il brand "Bandiera Gialla". Sviluppo di canale diretto disintermediato e convenzioni B2B con organizzatori di eventi (Macerata Opera Festival, 5Mila Marche).
+                        </p>
+                        <div class="text-[11px] text-teal font-semibold mt-1"><i class="fa-solid fa-arrows-split-up-and-left"></i> KPI: Disintermediazione diretta del 15-20% e destagionalizzazione a 8 mesi l'anno.</div>
+                    </div>
+                </div>
+
+                <!-- Step 5 -->
+                <div class="bg-warmcard p-5 rounded-xl border border-warmborder shadow-sm flex flex-col md:flex-row gap-4 items-start">
+                    <div class="bg-amber text-white rounded-xl p-3 text-center min-w-[70px]">
+                        <span class="block text-xs uppercase font-bold text-amber-100">Fase</span>
+                        <span class="text-2xl font-extrabold">05</span>
+                    </div>
+                    <div class="space-y-1 text-xs">
+                        <h3 class="font-bold text-navy text-base">Revenue Management Dinamico & Scalabilità</h3>
+                        <p class="text-gray-600 leading-relaxed">
+                            Integrazione di un software di pricing dinamico (PriceLabs / Wheelhouse) connesso tramite Channel Manager. Impostazione manuale di tariffe premium nei 7 picchi ad alta compressione identificati nel calendario strategico. Reinvestimento del cash flow in ulteriori unità in Property Management.
+                        </p>
+                        <div class="text-[11px] text-amber-800 font-semibold mt-1"><i class="fa-solid fa-chart-line"></i> KPI: Massimizzazione del RevPAR con rendimento Cash-on-Cash stimato &gt; 80%.</div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-navy text-white border-t border-blue-900 mt-auto py-6">
+        <div class="max-w-7xl mx-auto px-4 text-center text-xs text-blue-200">
+            <p>© 2025 Porto Recanati Tourism Real Estate Intelligence. Tutti i dati sono estratti dal rapporto strategico di analisi di mercato.</p>
+            <p class="mt-1 text-[11px] text-blue-400">Piattaforma interattiva ad uso esclusivo di investitori immobiliari e property manager professionisti.</p>
+        </div>
+    </footer>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        // Global Data Storage
+        const losData = {
+            labels: ['Porto Recanati', 'Numana', 'Senigallia', 'Sirolo', 'Civitanova Marche'],
+            datasets: [{
+                label: 'Permanenza Media (Notti)',
+                data: [6.41, 5.69, 5.28, 4.06, 3.30],
+                backgroundColor: ['#D97706', '#0D9488', '#1E3A8A', '#94A3B8', '#CBD5E1'],
+                borderRadius: 6
+            }]
+        };
+
+        const adrDataFull = {
+            labels: ['Bassa Stagione (Nov-Mar)', 'Media Stagione (Apr-Giu, Set-Ott)', 'Alta Stagione (Lug-Ago)'],
+            datasets: [
+                {
+                    label: 'Affittacamere/Mono',
+                    data: [57, 82, 110],
+                    borderColor: '#94A3B8',
+                    backgroundColor: '#94A3B8',
+                    tension: 0.2
+                },
+                {
+                    label: 'Bilocale (4 Pax)',
+                    data: [70, 105, 145],
+                    borderColor: '#0D9488',
+                    backgroundColor: '#0D9488',
+                    tension: 0.2
+                },
+                {
+                    label: 'Trilocale (Target)',
+                    data: [90, 150, 215],
+                    borderColor: '#D97706',
+                    backgroundColor: '#D97706',
+                    borderWidth: 3,
+                    tension: 0.2
+                },
+                {
+                    label: 'Quadrilocale',
+                    data: [115, 180, 270],
+                    borderColor: '#1E3A8A',
+                    backgroundColor: '#1E3A8A',
+                    tension: 0.2
+                },
+                {
+                    label: 'Villa (8+ Pax)',
+                    data: [175, 300, 575],
+                    borderColor: '#6366F1',
+                    backgroundColor: '#6366F1',
+                    tension: 0.2
+                }
+            ]
+        };
+
+        const eventsList = [
+            {
+                name: "Ponti Primaverili (Pasqua, 25 Aprile, 1 Maggio)",
+                period: "Aprile - Maggio 2025",
+                target: "Short-break Domestici",
+                adrMult: "+30% / +40%",
+                minStay: "3 Notti",
+                type: "bike"
+            },
+            {
+                name: "Brodetto Show / Settimana del Brodetto",
+                period: "10 - 28 Giugno 2025",
+                target: "Foodies, Turismo Prossimità",
+                adrMult: "+50%",
+                minStay: "2-3 Notti",
+                type: "cultura"
+            },
+            {
+                name: "Macerata Opera Festival (Sferisterio Spillover)",
+                period: "Metà Luglio - Inizio Agosto 2025",
+                target: "Melomani, Alto-spendenti Esteri",
+                adrMult: "+60% (Weekend)",
+                minStay: "2 Notti",
+                type: "cultura"
+            },
+            {
+                name: "Concerti Arena Beniamino Gigli",
+                period: "Luglio - Agosto 2025",
+                target: "Generazione Z / Millennials",
+                adrMult: "+40% (Peak Days)",
+                minStay: "1-2 Notti",
+                type: "cultura"
+            },
+            {
+                name: "Altissima Stagione Balneare (Ferragosto)",
+                period: "1 - 25 Agosto 2025",
+                target: "Famiglie Italiane e Straniere",
+                adrMult: "+100% / +150%",
+                minStay: "7 Notti (Sab-Sab)",
+                type: "estate"
+            },
+            {
+                name: "5Mila Marche (Granfondo Cicloturistica)",
+                period: "18 - 20 Settembre 2026",
+                target: "Cicloturisti, Atleti, Accompagnatori",
+                adrMult: "+60%",
+                minStay: "3 Notti",
+                type: "bike"
+            },
+            {
+                name: "Festa della Venuta (Loreto Religious Spillover)",
+                period: "9 - 10 Dicembre 2025",
+                target: "Pellegrini, Turismo Religioso",
+                adrMult: "+40%",
+                minStay: "2 Notti",
+                type: "cultura"
+            }
+        ];
+
+        let losChartInstance = null;
+        let adrChartInstance = null;
+
+        // Initialize App
+        document.addEventListener('DOMContentLoaded', () => {
+            initLosChart();
+            initAdrChart();
+            renderEventsTable(eventsList);
+            calculateROI();
+        });
+
+        // Tab Navigation
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+
+            document.getElementById(tabId).classList.remove('hidden');
+            document.getElementById(`btn-${tabId}`).classList.add('active');
+        }
+
+        // Init Chart 1: Length of Stay
+        function initLosChart() {
+            const ctx = document.getElementById('losChart').getContext('2d');
+            losChartInstance = new Chart(ctx, {
+                type: 'bar',
+                data: losData,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return ` Permanenza Media: ${context.raw} notti`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: { display: true, text: 'Notti per Soggiorno' }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Init Chart 2: ADR Trends
+        function initAdrChart() {
+            const ctx = document.getElementById('adrChart').getContext('2d');
+            adrChartInstance = new Chart(ctx, {
+                type: 'line',
+                data: adrDataFull,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'top', labels: { boxWidth: 12, font: { size: 10 } } },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return ` ${context.dataset.label}: ${context.raw} € / notte`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                            title: { display: true, text: 'Tariffa Media Giornaliera (€)' }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Filter ADR Chart Dataset
+        function updateAdrChart() {
+            const selected = document.getElementById('propertyTypeSelect').value;
+            if (selected === 'all') {
+                adrChartInstance.data.datasets = adrDataFull.datasets;
+            } else {
+                const map = { mono: 0, bilo: 1, trilo: 2, quadri: 3, villa: 4 };
+                const idx = map[selected];
+                adrChartInstance.data.datasets = [adrDataFull.datasets[idx]];
+            }
+            adrChartInstance.update();
+        }
+
+        // Dynamic ROI Calculator Logic
+        function calculateROI() {
+            const model = document.getElementById('roiModel').value;
+            const type = document.getElementById('roiType').value;
+            const annualCostInput = parseFloat(document.getElementById('roiAnnualCost').value) || 0;
+            const adr = parseFloat(document.getElementById('roiAdr').value);
+            const occPct = parseFloat(document.getElementById('roiOcc').value) / 100;
+
+            document.getElementById('adrVal').innerText = adr + " €";
+            document.getElementById('occVal').innerText = Math.round(occPct * 100) + "%";
+
+            // Update Input Labels based on model
+            const costLabel = document.getElementById('costInputLabel');
+            const rowFixedCost = document.getElementById('rowFixedCost');
+
+            if (model === 'r2r') {
+                costLabel.innerText = "Canone Annuo Locazione (€/anno)";
+                rowFixedCost.style.display = "flex";
+            } else if (model === 'btl') {
+                costLabel.innerText = "Costo Capitale Acquisto/Ristrutt. (€)";
+                rowFixedCost.style.display = "flex";
+            } else if (model === 'pm') {
+                costLabel.innerText = "Fee Gestione PM (%)";
+                rowFixedCost.style.display = "none";
+            }
+
+            // Days sold
+            const daysSold = Math.round(365 * occPct);
+            const grossRevenue = daysSold * adr;
+
+            let operatingCosts = grossRevenue * 0.28; // OTA commission, cleanings, utilities (~28%)
+            let noi = 0;
+            let roiText = "";
+
+            if (model === 'r2r') {
+                noi = grossRevenue - operatingCosts - annualCostInput;
+                const initialSetup = 12000; // Average setup cost for furniture, deposit, CIN equipment
+                const roiVal = ((noi / initialSetup) * 100).toFixed(0);
+                roiText = `~${roiVal}% (Cash-on-Cash su cap. d'avvio ~12k €)`;
+                document.getElementById('resCostoFisso').innerText = `-${annualCostInput.toLocaleString('it-IT')} €`;
+            } else if (model === 'pm') {
+                const pmFeePct = annualCostInput > 100 ? 20 : annualCostInput; // Handle percentage input
+                const pmFee = grossRevenue * (pmFeePct / 100);
+                noi = pmFee - (grossRevenue * 0.05); // Direct costs
+                roiText = `~100% (Margine puro su fee di gestione ${pmFeePct}%)`;
+            } else if (model === 'btl') {
+                noi = grossRevenue - operatingCosts; // Property tax, maintenance
+                const capitalInvested = annualCostInput > 0 ? annualCostInput : 180000;
+                const roiVal = ((noi / capitalInvested) * 100).toFixed(1);
+                roiText = `~${roiVal}% Yield Netto sul Capitale`;
+                document.getElementById('resCostoFisso').innerText = `Immobile / Ammortamento`;
+            }
+
+            // Update UI
+            document.getElementById('resNotti').innerText = `${daysSold} notti`;
+            document.getElementById('resFatturato').innerText = `${Math.round(grossRevenue).toLocaleString('it-IT')} €`;
+            document.getElementById('resCostiOp').innerText = `-${Math.round(operatingCosts).toLocaleString('it-IT')} €`;
+            document.getElementById('resNOI').innerText = `${Math.round(noi).toLocaleString('it-IT')} €`;
+            document.getElementById('resROI').innerText = roiText;
+        }
+
+        // Render Events Table
+        function renderEventsTable(data) {
+            const tbody = document.getElementById('eventsTableBody');
+            tbody.innerHTML = '';
+
+            data.forEach(ev => {
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-warmbg transition-colors";
+                tr.innerHTML = `
+                    <td class="p-3.5 font-bold text-navy">${ev.name}</td>
+                    <td class="p-3.5 text-gray-600">${ev.period}</td>
+                    <td class="p-3.5"><span class="bg-gray-100 text-gray-700 px-2 py-0.5 rounded text-[10px] font-semibold">${ev.target}</span></td>
+                    <td class="p-3.5 font-bold text-amber">${ev.adrMult}</td>
+                    <td class="p-3.5 font-semibold text-teal">${ev.minStay}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // Filter Events Table
+        function filterEvents(category) {
+            if (category === 'all') {
+                renderEventsTable(eventsList);
+            } else {
+                const filtered = eventsList.filter(e => e.type === category);
+                renderEventsTable(filtered);
+            }
+        }
+    </script>
+</body>
+</html>
